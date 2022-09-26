@@ -4,6 +4,7 @@ import { ProfilesService } from './profiles.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { NotFoundException } from '@nestjs/common/exceptions';
 
 @Controller('profiles')
 export class ProfilesController {
@@ -25,13 +26,20 @@ export class ProfilesController {
   }
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profilesService.update(+id, updateProfileDto);
+  update(@Param('id') id: any, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profilesService.update(id, updateProfileDto);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profilesService.remove(+id);
+ async remove(@Param('id') id: any) {
+    const deleted= await this.profilesService.remove(id);
+
+    if (deleted === 0) {
+      throw new NotFoundException('This User doesn\'t exist');
+  }
+
+  // return success message
+  return 'Successfully deleted';
   }
 }

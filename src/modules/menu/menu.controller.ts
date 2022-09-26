@@ -4,7 +4,7 @@ import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { AuthGuard } from '@nestjs/passport';
-
+import { NotFoundException } from '@nestjs/common/exceptions';
 @Controller('menu')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
@@ -27,11 +27,17 @@ export class MenuController {
   @UseGuards(AuthGuard('jwt')) 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMenuDto: UpdateMenuDto) {
-    return this.menuService.update(+id, updateMenuDto);
+    return this.menuService.update(id, updateMenuDto);
   }
   @UseGuards(AuthGuard('jwt')) 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.menuService.remove(+id);
+ async remove(@Param('id') id:any) {
+    const deleted=await this.menuService.remove(id);
+    if (deleted === 0) {
+      throw new NotFoundException('Menu Item doesn\'t exist');
+  }
+
+  // return success message
+  return 'Successfully deleted';
   }
 }
