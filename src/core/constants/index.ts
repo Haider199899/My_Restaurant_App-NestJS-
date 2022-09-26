@@ -1,0 +1,6 @@
+/* eslint-disable prettier/prettier */
+export const USER_REPOSITORY = 'USER_REPOSITORY';
+export const RESTAURANT_REPOSITORY = 'RESTAURANT_REPOSITORY';
+export const PROFILE_REPOSITORY = 'PROFILE_REPOSITORY';
+export const MENU_REPOSITORY = 'MENU_REPOSITORY';
+export const ORDER_REPOSITORY = 'ORDER_REPOSITORY';
